@@ -216,6 +216,43 @@ int rope_cutting(int n, int a, int b, int c)
     */
 }
 
+int rope_cutting_dp(int n, int a, int b, int c)
+{
+    vector<int> dp(n+1, -1); 
+    // initialize a vector of size n+1 with the value (-1)
+
+    dp[0]=0;
+
+    for(int i=1;i<=n;i++)
+    { 
+        if((i-a)>=0 && dp[i-a]!=-1)
+            dp[i]=max(dp[i],(dp[i-a]+1));
+            /*
+            dp[i-a] means: Maximum pieces we can get from rope of length i-a.
+            Now imagine you are computing dp[i].
+
+            If you decide to cut a first, what happens? You make one cut of length a.
+            Remaining rope = i-a.
+
+            From that remaining rope, you can make dp[i-a] pieces.
+
+            So total pieces becomes: 1 (current cut) + dp[i-a] (remaining pieces)
+
+            => dp[i-a] + 1
+
+            That +1 is counting the cut you just made.
+            */
+
+        if((i-b)>=0 && dp[i-b]!=-1)
+            dp[i]=max(dp[i],(dp[i-b]+1));
+
+        if((i-c)>=0 && dp[i-c]!=-1)
+            dp[i]=max(dp[i],(dp[i-c]+1));
+    }
+
+    return dp[n];
+}
+
 int main()
 {
     int n=8;
@@ -232,7 +269,7 @@ int main()
     cout<<"Sum of the digits of "<<N<<" is "<<sum_of_digits_recursive(N)<<endl;
 
     int num=23, a=12, b=9, c=11;
-    cout<<"Rope cutting problem solution: "<<rope_cutting(num,a,b,c)<<endl;
+    cout<<"Rope cutting problem solution: "<<rope_cutting_dp(num,a,b,c)<<endl;
 
     return 0;
 }
