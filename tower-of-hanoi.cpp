@@ -32,6 +32,14 @@ void tower_of_hanoi(int n, char A, char B, char C)
     tower_of_hanoi(n-1,B,A,C);
 }
 
+/*
+Below is 
+
+Time complexity:  theta(2^n)
+
+Space complexity: theta(n)
+Auxiliary space:  theta(n)
+*/
 void tower_of_hanoi_edited(int n, char source, char helper, char destination)
 {
     if(n==1)

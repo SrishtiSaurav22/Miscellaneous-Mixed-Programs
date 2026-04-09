@@ -10,7 +10,6 @@ Time complexity:   theta(n.2^n)
 Space complexity:  theta(n^2)
 Auxiliary space:   theta(n^2)
 */
-
 void generate_subsets_recursion(string &origin, string curr="", int index=0) 
 // if you assign a default value to a parameter, all the parameters to it right should also have default values assigned
 // curr is being passed by value here
@@ -44,7 +43,6 @@ Time complexity:   theta(n.2^n)
 Space complexity:  theta(n)
 Auxiliary space:   theta(n)
 */
-
 void generate_subsets_recursion_optimized(string &origin, string &curr, int index=0)
 // curr is bein passed by reference here
 {
