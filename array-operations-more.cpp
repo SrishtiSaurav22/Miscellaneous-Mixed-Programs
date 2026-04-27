@@ -391,6 +391,15 @@ int* remove_duplicates_from_sorted_array(int* arr, int &size)
     return new_array;
 }
 
+/*
+Below is a function to 
+
+Time complexity:  
+
+Space complexity: 
+Auxiliary space:  
+*/
+
 void remove_duplicates_from_sorted_array_course_approach(int* arr, int &size)
 {
     int* temp=new int[size];
@@ -453,6 +462,15 @@ void move_zeroes_to_array_end(int* arr, int &size)
         arr[i]=vec[i];
 }
 
+/*
+Below is a function to 
+
+Time complexity:  
+
+Space complexity: 
+Auxiliary space:  
+*/
+
 void moveToEndNaive(int* arr, int &size)
 {
     for(int i=0;i<size;i++)
@@ -469,6 +487,15 @@ void moveToEndNaive(int* arr, int &size)
         }
     }
 }
+
+/*
+Below is a function to 
+
+Time complexity:  
+
+Space complexity: 
+Auxiliary space:  
+*/
 
 void moveToEndEfficient(int* arr, int &size)
 {
@@ -581,6 +608,15 @@ int max_diff_naive(int* arr, int &size)
     return max_diff;
 }
 
+/*
+Below is a function to 
+
+Time complexity:  
+
+Space complexity: 
+Auxiliary space:  
+*/
+
 int max_diff_optimized(int* arr, int &size)
 {
     if(size<2)
@@ -603,6 +639,18 @@ int max_diff_optimized(int* arr, int &size)
     return max_diff;
 }
 
+//______________________________________________________________________________________________________
+// 9. Finding the frequencies in a SORTED array
+
+/*
+Below is a function to finding frequencies in a sorted array
+
+Time complexity:  
+
+Space complexity: 
+Auxiliary space:  
+*/
+
 void count_freqs_in_sorted_array(int* arr, int &size)
 {
     int count=1;
@@ -622,6 +670,124 @@ void count_freqs_in_sorted_array(int* arr, int &size)
 
     cout<<arr[i-1]<<"\t"<<count<<"\n";
 }
+
+//______________________________________________________________________________________________________
+// 10. Solving the stock, buy and sell problem
+
+/*
+Below is a function to solve the stock, buy and sell problem
+
+Time complexity:  
+
+Space complexity: 
+Auxiliary space:  
+*/
+
+int max(int &a, int &b)
+{
+    return (a>b)?a:b;
+}
+
+/*
+Below is a function to 
+
+Time complexity:  
+
+Space complexity: 
+Auxiliary space:  
+*/
+
+int maxProfit(int price[], int start, int end)
+{
+    if(end <= start)
+        return 0;
+
+    int profit=0;
+
+    for(int i=start; i<=end; i++)
+    {
+        for(int j=i+1; j<=end; j++)
+        {
+            if(price[j] > price[i])
+            {
+                int curr_profit = price[j] - price[i] + maxProfit(price, start, i-1) + maxProfit(price, j+1, end);
+                profit = max(profit, curr_profit);
+            }
+        }
+    }
+}
+
+/*
+Below is a function to 
+
+Time complexity:  
+
+Space complexity: 
+Auxiliary space:  
+*/
+
+int stock_buy_sell_problem_efficient(int* arr, int &size)
+{
+    if(size<2)
+        return 0;
+
+    int sum=0;
+
+    for(int i=1;i<size;i++)
+        if(arr[i]>arr[i-1])
+            sum=sum+(arr[i]-arr[i-1]);
+
+    return sum;
+}
+
+//______________________________________________________________________________________________________
+// 11. Solving the trapping rainwater problem
+
+/*
+Below is a function to 
+
+Time complexity:  
+
+Space complexity: 
+Auxiliary space:  
+*/
+
+int max_value(int &a, int &b)
+{
+    return (a>b)?a:b;
+}
+
+int min_value(int &a, int &b)
+{
+    return (a<b)?a:b;
+}
+
+int max_in_array(int* arr, int start, int end)
+{
+    int max=arr[start];
+
+    for(int i=start+1;i<=end;i++)
+        if(arr[i]>max)
+            max=arr[i];
+
+    return max;
+}
+
+int min_in_array(int* arr, int start, int end)
+{
+    int min=arr[start];
+
+    for(int i=start+1;i<=end;i++)
+        if(arr[i]<min)
+            min=arr[i];
+
+    return min;
+}
+
+//int rainwater_trapping_naive(int* arr, int &size)
+//{
+
+//}
 
 int main()
 {
