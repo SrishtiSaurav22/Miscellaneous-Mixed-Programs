@@ -784,10 +784,65 @@ int min_in_array(int* arr, int start, int end)
     return min;
 }
 
-//int rainwater_trapping_naive(int* arr, int &size)
-//{
+int rainwater_trapping_two_pointer_approach(int* arr, int &size)
+{
+    int left=0, right=size-1;
+    int left_max=0, right_max=0;
+    int water=0;
 
-//}
+    while(left <= right)
+    {
+        /*
+        Implementing the formula:
+
+        water[i] = min(max_left, max_right) - height[i]
+        */
+        if(arr[left] <= arr[right]) //because the shorter wall is the limiting wall
+        {
+            left_max=max_value(left_max,arr[left]);
+            water+=left_max-arr[left];
+            ++left;
+        }
+
+        else
+        {
+            right_max=max_value(right_max,arr[right]);
+            water+=right_max-arr[right];
+            --right;
+        }
+    }
+
+    return water;
+}
+
+int rainwater_trapping_prefix_array_approach(int* arr, int &size)
+{
+    if(size < 3)
+        return 0;
+
+    vector<int> left_max(size), right_max(size);
+
+    // LEFT MAX
+    left_max[0] = arr[0];
+    for(int i = 1; i < size; i++)
+        left_max[i] = max_value(left_max[i-1], arr[i]);
+
+    // RIGHT MAX
+    right_max[size-1] = arr[size-1];
+    for(int i = size-2; i >= 0; i--)
+        right_max[i] = max_value(right_max[i+1], arr[i]);
+
+    /*
+    Implementing the formula:
+
+    water[i] = min(max_left, max_right) - height[i]
+    */
+    int water = 0;
+    for(int i = 0; i < size; i++)
+        water += min_value(left_max[i], right_max[i]) - arr[i];
+
+    return water;
+}
 
 int main()
 {
