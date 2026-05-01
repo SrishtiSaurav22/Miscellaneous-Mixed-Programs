@@ -966,6 +966,60 @@ int max_subarray_sum_optimised(int* arr, int &size)
     return res;
 }
 
+//______________________________________________________________________________________________________
+// 13. Finding the longest even odd subarray 
+
+/*
+Below is a function to 
+
+Time complexity:  
+
+Space complexity: 
+Auxiliary space:  
+*/
+
+int longest_even_odd_subarray_length_naive(int* arr, int &size)
+{
+    int length=1;
+
+    for(int i=0;i<size;i++)
+    {
+        int curr=1;
+
+        for(int j=i+1;j<size;j++)
+        {
+            if( (arr[j]%2==0 && arr[j-1]%2!=0) || (arr[j-1]%2==0 && arr[j]%2!=0) )
+                ++curr;
+
+            else
+                break;
+        }
+
+        length=max_value(length, curr);
+    }
+
+    return length;
+}
+
+int longest_even_odd_subarray_length_optimised(int* arr, int &size)
+{
+    int length=0;
+
+    for(int i=1;i<size;i++)
+    {
+        if( (arr[i-1] + arr[i]) % 2 != 0)
+        {
+            if(length==0)
+                length=2;
+            
+            else
+                ++length;
+        }
+    }
+
+    return length;
+}
+
 int main()
 {
     int size=10;
@@ -1068,6 +1122,16 @@ int main()
     arr_msas[3]=-1;
     arr_msas[4]=2;
 
+    int size_leosl=6;
+    int* arr_leosl=new int[size_leosl];
+
+    arr_leosl[0]=10;
+    arr_leosl[1]=12;
+    arr_leosl[2]=14;
+    arr_leosl[3]=7;
+    arr_leosl[4]=8;
+    arr_leosl[5]=9;
+
     cout<<"The largest element in the array is "<<find_largest_element_in_array(arr,size);
     cout<<"\nThe 2nd largest elememt in the array is "<<find_second_largest_element_in_array_course_approach(arr,size);
     
@@ -1110,6 +1174,9 @@ int main()
     cout<<endl;
     cout<<max_subarray_sum_naive(arr_msas,size_msas);
 
+    cout<<endl;
+    cout<<longest_even_odd_subarray_length_naive(arr_leosl, size_leosl);
+
     delete[] arr;
     delete[] sorted_arr;
     delete[] arr_z;
@@ -1118,6 +1185,7 @@ int main()
     delete[] arr_cf;
     delete[] arr_co;
     delete[] arr_msas;
+    delete[] arr_leosl;
     
     return 0;
 }
