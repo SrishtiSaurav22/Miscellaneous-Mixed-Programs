@@ -846,6 +846,18 @@ int rainwater_trapping_prefix_array_approach(int* arr, int &size)
     return water;
 }
 
+//______________________________________________________________________________________________________
+// 12. Finding the maximum consecutive 1s
+
+/*
+Below is a function to 
+
+Time complexity:  
+
+Space complexity: 
+Auxiliary space:  
+*/
+
 int max_consecutive_ones_in_binary_array_naive(int* arr, int &size)
 {
     int res=0;
@@ -891,6 +903,67 @@ int max_consecutive_ones_in_binary_array_optimised(int* arr, int &size)
                 max_so_far=curr_count;
 
     return max_so_far;
+}
+
+//______________________________________________________________________________________________________
+// 13. Finding the maximum subarray sum 
+
+/*
+Below is a function to 
+
+Time complexity:  
+
+Space complexity: 
+Auxiliary space:  
+*/
+
+int max_subarray_sum_naive(int* arr, int &size)
+{
+    int res=arr[0];
+
+    for(int i=0;i<size;i++)
+    {
+        int curr_sum=0;
+
+        for(int j=i;j<size;j++)
+        {
+            curr_sum = curr_sum + arr[j];
+            res = max_value(curr_sum, res);
+        }
+    }
+
+    return res;
+}
+
+int max_subarray_sum_optimised(int* arr, int &size)
+{
+    int res=arr[0];
+    int max_sum_so_far=arr[0];
+
+    for(int i=1;i<size;i++)
+    {
+        int new_max_sum_so_far=max_sum_so_far + arr[i];
+        /*
+        To remove the error message thatI got when I put the expression instead of the variable 'new_max_sum_so_far':
+            initial value of reference to non-const must be an lvalue
+        */
+        max_sum_so_far=max_value(arr[i], new_max_sum_so_far);
+        res=max_value(res, max_sum_so_far);
+        /*
+        If you used only one variable, say res, and tried to do 
+        res = max(arr[i], res + arr[i]), you would be forced to 
+        include the current element in your "best" total, even 
+        if it actually makes your total worse than a previous peak.
+        */
+    }
+
+    /*
+    Concept:
+
+        maxEnding(i) = max ( maxEnding(i-1) + arr[i], arr[i] )
+    */
+
+    return res;
 }
 
 int main()
@@ -986,6 +1059,15 @@ int main()
     arr_co[5]=1;
     arr_co[6]=1;
 
+    int size_msas=5;
+    int* arr_msas=new int[size_msas];
+
+    arr_msas[0]=1;
+    arr_msas[1]=-2;
+    arr_msas[2]=3;
+    arr_msas[3]=-1;
+    arr_msas[4]=2;
+
     cout<<"The largest element in the array is "<<find_largest_element_in_array(arr,size);
     cout<<"\nThe 2nd largest elememt in the array is "<<find_second_largest_element_in_array_course_approach(arr,size);
     
@@ -1025,6 +1107,9 @@ int main()
     cout<<endl;
     cout<<max_consecutive_ones_in_binary_array_naive(arr_co,size_co);
 
+    cout<<endl;
+    cout<<max_subarray_sum_naive(arr_msas,size_msas);
+
     delete[] arr;
     delete[] sorted_arr;
     delete[] arr_z;
@@ -1032,6 +1117,7 @@ int main()
     delete[] arr_md;
     delete[] arr_cf;
     delete[] arr_co;
+    delete[] arr_msas;
     
     return 0;
 }
