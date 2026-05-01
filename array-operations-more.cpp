@@ -715,6 +715,8 @@ int maxProfit(int price[], int start, int end)
             }
         }
     }
+
+    return profit;
 }
 
 /*
@@ -799,15 +801,15 @@ int rainwater_trapping_two_pointer_approach(int* arr, int &size)
         */
         if(arr[left] <= arr[right]) //because the shorter wall is the limiting wall
         {
-            left_max=max_value(left_max,arr[left]);
-            water+=left_max-arr[left];
+            left_max = max_value(left_max,arr[left]);
+            water += left_max - arr[left];
             ++left;
         }
 
         else
         {
-            right_max=max_value(right_max,arr[right]);
-            water+=right_max-arr[right];
+            right_max = max_value(right_max,arr[right]);
+            water += right_max - arr[right];
             --right;
         }
     }
@@ -842,6 +844,53 @@ int rainwater_trapping_prefix_array_approach(int* arr, int &size)
         water += min_value(left_max[i], right_max[i]) - arr[i];
 
     return water;
+}
+
+int max_consecutive_ones_in_binary_array_naive(int* arr, int &size)
+{
+    int res=0;
+
+    for(int i=0;i<size;i++)
+    {
+        int count=0;
+
+        for(int j=i;j<size;j++)
+        {
+            if(arr[j]==1)
+                ++count;
+
+            else
+                break;
+        }
+
+        res=max_value(count,res);
+    }
+
+    return res;
+}
+
+int max_consecutive_ones_in_binary_array_optimised(int* arr, int &size)
+{
+    int max_so_far=0, curr_count=0;
+
+    for(int i=0;i<size;i++)
+    {
+        if(arr[i]!=1)
+        {
+            if(curr_count > max_so_far)
+                max_so_far=curr_count;
+
+            curr_count=0;
+        }
+
+        else
+            ++curr_count;
+    }
+
+    if(curr_count > max_so_far)
+                max_so_far=curr_count;
+
+    return max_so_far;
 }
 
 int main()
@@ -926,6 +975,17 @@ int main()
     arr_cf[4]=36;
     arr_cf[5]=36;
 
+    int size_co=7;
+    int* arr_co=new int[size_co];
+
+    arr_co[0]=1;
+    arr_co[1]=1;
+    arr_co[2]=0;
+    arr_co[3]=1;
+    arr_co[4]=1;
+    arr_co[5]=1;
+    arr_co[6]=1;
+
     cout<<"The largest element in the array is "<<find_largest_element_in_array(arr,size);
     cout<<"\nThe 2nd largest elememt in the array is "<<find_second_largest_element_in_array_course_approach(arr,size);
     
@@ -962,12 +1022,16 @@ int main()
     cout<<"\nCounting the frequencies in a sorted array:\n";
     count_freqs_in_sorted_array(arr_cf,size_cf);
 
+    cout<<endl;
+    cout<<max_consecutive_ones_in_binary_array_naive(arr_co,size_co);
+
     delete[] arr;
     delete[] sorted_arr;
     delete[] arr_z;
     delete[] arr_l;
     delete[] arr_md;
     delete[] arr_cf;
+    delete[] arr_co;
     
     return 0;
 }
