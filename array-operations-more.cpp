@@ -1020,6 +1020,256 @@ int longest_even_odd_subarray_length_optimised(int* arr, int &size)
     return length;
 }
 
+//______________________________________________________________________________________________________
+// 14. Finding the maximum circular subarray sum
+
+/*
+Below is a function to 
+
+Time complexity:  
+
+Space complexity: 
+Auxiliary space:  
+*/
+
+int max_circular_subarray_sum_naive_course_approach(int* arr, int &size)
+{
+    int res=arr[0];
+
+    for(int i=0; i<size; i++)
+    {
+        int curr_max = arr[i];
+        int curr_sum = arr[i];
+
+        for(int j=i; j<size; j++)
+        {
+            int index = (i+j) % size;
+
+            curr_sum = curr_sum + arr[index];
+            curr_max = max_value(curr_max, curr_sum);
+            /*
+            If you write:
+
+            int curr_sum = curr_sum + arr[index];
+            int curr_max = max_value(curr_max, curr_sum);
+
+            Then you'll get an incorrect input because the variables are being declared, so they're new variables inside the j loop, 
+            different from those declared inside the i loop
+            /*
+            */
+        }
+
+        res = max_value(res, curr_max);
+    }
+
+    return res;
+}
+
+/*
+MAXIMUM CIRCULAR SUBARRAY SUM (Kadane-based approach)
+
+----------------------------------------
+1. normalMaxSum() → Standard Kadane’s Algorithm
+----------------------------------------
+
+Goal:
+- Find maximum sum of a normal (non-circular) subarray
+
+Key idea:
+- At each index, decide:
+    → Extend previous subarray
+    OR
+    → Start a new subarray
+
+Variables:
+- max_sum_so_far → max subarray ending at current index
+- res → global maximum subarray sum
+
+Logic:
+- new_max_sum_so_far = max_sum_so_far + arr[i]
+- max_sum_so_far = max(arr[i], new_max_sum_so_far)
+- res = max(res, max_sum_so_far)
+
+Intuition:
+- Either continue the previous sequence
+- Or restart from current element
+
+----------------------------------------
+2. overallMaxSum() → Circular extension
+----------------------------------------
+
+Goal:
+- Handle circular subarrays (wrapping allowed)
+
+Two cases:
+1. Normal subarray (no wrap)
+2. Circular subarray (wrap around)
+
+----------------------------------------
+Step 1: Compute normal max
+----------------------------------------
+
+int maxNormal = normalMaxSum(arr, size);
+
+- This handles non-circular case
+- Also covers case when all elements are negative
+
+----------------------------------------
+Step 2: Handle all-negative case
+----------------------------------------
+
+if(maxNormal < 0)
+    return maxNormal;
+
+- If all elements are negative:
+    → circular logic breaks
+    → answer is simply the maximum element
+
+----------------------------------------
+Step 3: Compute total sum + invert array
+----------------------------------------
+
+arrSum = sum of all elements
+
+Then:
+    arr[i] = -arr[i]
+
+Why invert?
+- To convert minimum subarray problem into maximum subarray problem
+
+Key identity:
+    max(inverted array) = -min(original array)
+
+----------------------------------------
+Step 4: Find maximum circular sum
+----------------------------------------
+
+maxCircular = arrSum + normalMaxSum(inverted array)
+
+Why this works:
+- Circular subarray = total sum - minimum subarray
+- Instead of finding minimum directly:
+    → invert array
+    → find maximum subarray
+
+So:
+    maxCircular = totalSum - minSubarray
+                = totalSum + maxSubarray(inverted)
+
+----------------------------------------
+Step 5: Final answer
+----------------------------------------
+
+return max(maxNormal, maxCircular);
+
+- Compare:
+    → best non-circular subarray
+    → best circular subarray
+
+----------------------------------------
+Key Intuition Summary:
+----------------------------------------
+
+1. Normal case → Kadane’s algorithm
+2. Circular case → Remove the "worst" (minimum) subarray
+3. Inversion trick → converts min problem into max problem
+
+----------------------------------------
+Time & Space Complexity:
+----------------------------------------
+
+Time:  O(n)
+Space: O(1)
+
+----------------------------------------
+One-line takeaway:
+----------------------------------------
+
+Max Circular Sum =
+max( Kadane(arr), totalSum - minSubarray )
+
+*/
+
+int normalMaxSum(int* arr, int &size)
+{
+    int res=arr[0];
+    int max_sum_so_far=arr[0];
+
+    for(int i=1;i<size;i++)
+    {
+        int new_max_sum_so_far=max_sum_so_far + arr[i];
+
+        max_sum_so_far=max_value(arr[i], new_max_sum_so_far);
+        res=max_value(res, max_sum_so_far);
+    }
+
+    return res;
+}
+
+int overallMaxSum(int* arr, int &size)
+{
+    int maxNormal=normalMaxSum(arr, size);
+
+    if(maxNormal < 0)
+        return maxNormal;
+
+    int arrSum=0;
+
+    for(int i=0;i<size;i++)
+    {
+        arrSum += arr[i];
+        arr[i] = -arr[i];
+    }
+
+    int maxCircular = arrSum + normalMaxSum(arr, size);
+
+    return max_value(maxNormal , maxCircular);
+}
+
+/*
+Why this approach is incorrect:
+
+1. Violates subarray length constraint:
+   - A valid circular subarray can include at most 'n' elements.
+   - This loop runs ~2n iterations, allowing subarrays longer than 'n'.
+
+2. Reuses elements (invalid for this problem):
+   - Circular array allows wrapping, but NOT reusing elements.
+   - This approach may include the same element multiple times.
+
+3. Incorrect problem being solved:
+   - Effectively computes max subarray over a "repeated" array.
+   - Equivalent to solving on an infinite/duplicated array, not circular array.
+
+4. Kadane’s algorithm assumption breaks:
+   - Kadane assumes linear traversal without revisiting indices.
+   - Using (i + 1) % size revisits elements → invalidates Kadane logic.
+
+5. No control over subarray boundaries:
+   - There is no mechanism to ensure subarray size ≤ n.
+   - Leads to invalid subarrays like [5, -2, 3, 4, 5].
+
+6. Produces incorrect results:
+   - Can overestimate answer by including repeated high-value elements.
+*/
+/*
+int max_circular_subarray_sum_optimised(int* arr, int &size)
+{
+    int res=arr[0];
+    int max_sum_so_far=arr[0];
+
+    for(int i=1,j=1;j<((2*size)-1);i=(i+1)%size,j++)
+    {
+        int new_max_sum_so_far=max_sum_so_far + arr[i];
+
+        max_sum_so_far=max_value(arr[i], new_max_sum_so_far);
+        res=max_value(res, max_sum_so_far);
+    }
+
+    return res;
+}
+*/
+
 int main()
 {
     int size=10;
@@ -1132,6 +1382,13 @@ int main()
     arr_leosl[4]=8;
     arr_leosl[5]=9;
 
+    int size_mcsas=3;
+    int* arr_mcsas=new int[size_mcsas];
+
+    arr_mcsas[0]=-8;
+    arr_mcsas[1]=7;
+    arr_mcsas[2]=6;
+
     cout<<"The largest element in the array is "<<find_largest_element_in_array(arr,size);
     cout<<"\nThe 2nd largest elememt in the array is "<<find_second_largest_element_in_array_course_approach(arr,size);
     
@@ -1177,6 +1434,9 @@ int main()
     cout<<endl;
     cout<<longest_even_odd_subarray_length_naive(arr_leosl, size_leosl);
 
+    cout<<endl;
+    cout<<max_circular_subarray_sum_naive_course_approach(arr_mcsas, size_mcsas);
+
     delete[] arr;
     delete[] sorted_arr;
     delete[] arr_z;
@@ -1186,6 +1446,7 @@ int main()
     delete[] arr_co;
     delete[] arr_msas;
     delete[] arr_leosl;
+    delete[] arr_mcsas;
     
     return 0;
 }
