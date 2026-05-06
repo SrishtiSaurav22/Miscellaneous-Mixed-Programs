@@ -1270,6 +1270,124 @@ int max_circular_subarray_sum_optimised(int* arr, int &size)
 }
 */
 
+//______________________________________________________________________________________________________
+// 15. Find the majority element
+
+/*
+Below is a function to 
+
+Time complexity:  
+
+Space complexity: 
+Auxiliary space:  
+*/
+
+int majority_element_naive(int* arr, int &size)
+{
+    int max=0, pos=-1;;
+
+    for(int i=0;i<size;i++)
+    {
+        int count=0;
+        
+        for(int j=0;j<size;j++)
+            if(arr[j]==arr[i])
+                ++count;
+
+        if(count > max)
+        {
+            max=count;
+            pos=i;
+        }
+    }
+
+    if(max > (size/2))
+        return pos;
+
+    else
+        return -1;
+}
+
+int majority_element_optimised(int* arr, int &size)
+{
+    if(size<=0)
+        return -1;
+
+    int max=0, pos=-1;
+    map<int, int> m;
+
+    for(int i=0; i<size; i++)
+    {
+        /*
+        auto itr=m.find(arr[i]);
+
+        if(itr!=m.end())
+        {
+            ++(itr->second);
+
+            if( (itr->second) > max )
+            {
+                max=itr->second;
+                pos=i;
+            }
+        }
+
+        else
+            m.insert({arr[i], 1});
+        */
+
+        m[arr[i]]++; // automatically initializes to 0, then increments to 1
+
+        if(m[arr[i]] > max)
+        {
+            max=m[arr[i]];
+            pos=i; // store the index of the element
+        }
+    }
+
+    if(max > (size/2) )
+        return pos;
+
+    return -1;
+}
+
+int findMajority(int* arr, int &size)
+{
+
+    if(size <= 0)
+        return -1;
+
+    int pos=0,count=1; 
+    // initially the result is assumed to be the first element of the array
+
+    // find a candidate
+    for(int i=1;i<size;i++)
+    {
+        if(arr[pos]==arr[i])
+            ++count;
+        
+        else
+            --count;
+
+        if(count==0)
+        {
+            pos=i;
+            count=1;
+        }
+    }
+
+    // now if the candidate is actually a majority
+    count=0;
+    for(int i=0;i<size;i++)
+        if(arr[i] == arr[pos])
+            ++count;
+    
+    if(count <= (size/2))
+        pos=-1;
+    
+    return pos;
+}
+
 int main()
 {
     int size=10;
@@ -1389,6 +1507,16 @@ int main()
     arr_mcsas[1]=7;
     arr_mcsas[2]=6;
 
+    int size_me=6;
+    int* arr_me=new int[size_me];
+
+    arr_me[0]=3;
+    arr_me[1]=7;
+    arr_me[2]=4;
+    arr_me[3]=7;
+    arr_me[4]=7;
+    arr_me[5]=5;
+
     cout<<"The largest element in the array is "<<find_largest_element_in_array(arr,size);
     cout<<"\nThe 2nd largest elememt in the array is "<<find_second_largest_element_in_array_course_approach(arr,size);
     
@@ -1437,6 +1565,9 @@ int main()
     cout<<endl;
     cout<<max_circular_subarray_sum_naive_course_approach(arr_mcsas, size_mcsas);
 
+    cout<<endl;
+    cout<<"Majority element in arr_me array: "<<findMajority(arr_me, size_me);
+
     delete[] arr;
     delete[] sorted_arr;
     delete[] arr_z;
@@ -1447,6 +1578,7 @@ int main()
     delete[] arr_msas;
     delete[] arr_leosl;
     delete[] arr_mcsas;
+    delete[] arr_me;
     
     return 0;
 }
