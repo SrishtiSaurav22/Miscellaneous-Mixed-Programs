@@ -1388,6 +1388,96 @@ int findMajority(int* arr, int &size)
     return pos;
 }
 
+//______________________________________________________________________________________________________
+// 16. Minimum consecutive flips
+
+/*
+Below is a function to 
+
+Time complexity:  
+
+Space complexity: 
+Auxiliary space:  
+*/
+
+//______________________________________________________________________________________________________
+// 17. Sliding window technique
+
+/*
+Below is a function to 
+
+Time complexity:  
+
+Space complexity: 
+Auxiliary space:  
+*/
+
+int sliding_window_sum_naive(int* arr, int &size, int k)
+{
+    if(size <= 0 || k <= 0 || k > size)
+        return -1;
+
+    int start=0, end=k-1, max=INT_MIN;
+
+    while(end<size)
+    {
+        int sum=0;
+
+        for(int i=start;i<=end;i++)
+            sum = sum + arr[i];
+        
+        max = max_value(max, sum);
+        
+        // slide the window further
+        ++start;
+        ++end;
+    }
+
+    return max;
+}
+
+int sliding_window_sum_naive_alternate(int* arr, int &size, int k)
+{
+    if(size <= 0 || k <= 0 || k > size)
+        return -1;
+    
+    int max=INT_MIN;
+
+    for(int i=0; (i+k-1) < size; i++)
+    {
+        int sum=0;
+        
+        for(int j=0;j<k;j++)
+            sum = sum + arr[i+j];
+            
+        max=max_value(max,sum);
+    }
+
+    return max;
+}
+
+int sliding_window_sum_optimised(int* arr, int &size, int k)
+{
+    if(size <= 0 || k <= 0 || k > size)
+        return -1;
+
+    int curr_sum=0;
+
+    for(int i=0; i<k; i++)
+        curr_sum = curr_sum + arr[i];
+    
+    int max = curr_sum;
+
+    for(int i=k; i<size; i++)
+    {
+        curr_sum = curr_sum + arr[i] - arr[i-k];
+        // add the next element in the new window, subtract the element that just went out of the window 
+        max = max_value(max, curr_sum);
+    }    
+
+    return max;
+}
+
 int main()
 {
     int size=10;
@@ -1517,6 +1607,16 @@ int main()
     arr_me[4]=7;
     arr_me[5]=5;
 
+    int size_sws=6;
+    int* arr_sws=new int[size_sws];
+
+    arr_sws[0]=1;
+    arr_sws[1]=8;
+    arr_sws[2]=30;
+    arr_sws[3]=-5;
+    arr_sws[4]=20;
+    arr_sws[5]=7;
+
     cout<<"The largest element in the array is "<<find_largest_element_in_array(arr,size);
     cout<<"\nThe 2nd largest elememt in the array is "<<find_second_largest_element_in_array_course_approach(arr,size);
     
@@ -1568,6 +1668,9 @@ int main()
     cout<<endl;
     cout<<"Majority element in arr_me array: "<<findMajority(arr_me, size_me);
 
+    cout<<endl;
+    cout<<"Sliding window sum for the arr_sws: "<<sliding_window_sum_optimised(arr_sws, size_sws, 3);
+
     delete[] arr;
     delete[] sorted_arr;
     delete[] arr_z;
@@ -1579,6 +1682,7 @@ int main()
     delete[] arr_leosl;
     delete[] arr_mcsas;
     delete[] arr_me;
+    delete[] arr_sws;
     
     return 0;
 }
