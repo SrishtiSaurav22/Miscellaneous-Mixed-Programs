@@ -1478,6 +1478,76 @@ int sliding_window_sum_optimised(int* arr, int &size, int k)
     return max;
 }
 
+//______________________________________________________________________________________________________
+// 18. Subarray with given sum
+
+/*
+Below is a function to 
+
+Time complexity:  
+
+Space complexity: 
+Auxiliary space:  
+*/
+
+string subarray_with_given_sum_naive(int* arr, int &size, int SUM)
+{
+    for(int i=0; i<size; i++)
+    {
+        int curr_sum=0;
+
+        for(int j=i; j<size; j++)
+        {
+            curr_sum = curr_sum + arr[j];
+
+            if(curr_sum == SUM)
+                return "Yes";
+        }
+    }
+
+    return "No";
+}
+
+string subarray_with_given_sum_optimised(int* arr, int &size, int SUM)
+{
+    int curr_sum=0, start=0, end=0;
+
+    while(start<=end && end<=size)
+    // here, end is <= size because your loop will check the sum after expansion
+    {
+        if(curr_sum == SUM)
+            return "Yes";
+        
+        else if(curr_sum < SUM)
+            curr_sum = curr_sum + arr[end++];
+            // this is why it's "end<=size"
+        
+        else
+            curr_sum = curr_sum - arr[start++];
+    }
+
+    return "No";
+}
+
+string subarray_with_given_sum_subarray(int* arr, int &size, int SUM)
+{
+    int s=0, curr_sum=0;
+
+    for(int e=0; e<size; e++)
+    // here expansion does not depend on any condition other than (e < size)
+    {
+        curr_sum = curr_sum + arr[e];
+        
+        while(curr_sum > SUM)
+            curr_sum = curr_sum - arr[s++];
+
+        if(curr_sum == SUM)
+            return "Yes";
+    }
+    
+    return "No";
+}
+
 int main()
 {
     int size=10;
@@ -1617,6 +1687,15 @@ int main()
     arr_sws[4]=20;
     arr_sws[5]=7;
 
+    int size_saws=5;
+    int* arr_saws=new int[size_saws];
+
+    arr_saws[0]=0;
+    arr_saws[1]=1;
+    arr_saws[2]=2;
+    arr_saws[3]=3;
+    arr_saws[4]=30;
+
     cout<<"The largest element in the array is "<<find_largest_element_in_array(arr,size);
     cout<<"\nThe 2nd largest elememt in the array is "<<find_second_largest_element_in_array_course_approach(arr,size);
     
@@ -1671,6 +1750,9 @@ int main()
     cout<<endl;
     cout<<"Sliding window sum for the arr_sws: "<<sliding_window_sum_optimised(arr_sws, size_sws, 3);
 
+    cout<<endl;
+    cout<<"Subarray with given sum check: "<<subarray_with_given_sum_optimised(arr_saws, size_saws, 33);
+
     delete[] arr;
     delete[] sorted_arr;
     delete[] arr_z;
@@ -1683,6 +1765,7 @@ int main()
     delete[] arr_mcsas;
     delete[] arr_me;
     delete[] arr_sws;
+    delete[] arr_saws;
     
     return 0;
 }
