@@ -1548,6 +1548,93 @@ string subarray_with_given_sum_subarray(int* arr, int &size, int SUM)
     return "No";
 }
 
+//______________________________________________________________________________________________________
+// 19. Equilibrium point
+
+/*
+Below is a function to 
+
+Time complexity:  
+
+Space complexity: 
+Auxiliary space:  
+*/
+bool find_equilibrium_point_naive(int* arr, int &size)
+{
+    if(size<=0)
+        return false;
+
+    if(size==1)
+        return true;
+
+    for(int i=0; i<size; i++)
+    {
+        int lsum=0, rsum=0;
+
+        for(int k=0; k<i; k++)
+            lsum=lsum+arr[k];
+        
+        for(int k=i+1; k<size; k++)
+            rsum=rsum+arr[k];
+
+        if(lsum == rsum)
+            return true;
+    }
+
+    return false;
+}
+
+bool find_equilibrium_point_optimised(int* arr, int &size)
+{
+    if(size<=0)
+        return false;
+
+    if(size==1)
+        return true;
+
+    int total_sum=0;
+    for(int i=0;i<size;i++)
+        total_sum = total_sum + arr[i];
+
+    int lsum = 0, rsum = total_sum;
+    for(int i=0; i<size; i++)
+    {
+        lsum = (i==0) ? 0 : (lsum + arr[i-1]);
+        rsum = rsum - arr[i];
+
+        if(lsum == rsum)
+            return true;
+    }
+
+    return false;
+}
+
+bool find_equilibrium_point_optimised_alternate(int* arr, int &size)
+{
+    if(size<=0)
+        return false;
+
+    if(size==1)
+        return true;
+
+    int rsum=0;
+    for(int i=0; i<size; i++)
+        rsum = rsum + arr[i];
+    
+    int lsum=0;
+    for(int i=0; i<size; i++)
+    {
+        rsum = rsum - arr[i];
+
+        if(lsum == rsum)
+            return true;
+        
+        lsum = lsum + arr[i];
+    }
+
+    return false;
+}
+
 int main()
 {
     int size=10;
@@ -1696,6 +1783,13 @@ int main()
     arr_saws[3]=3;
     arr_saws[4]=30;
 
+    int size_ep=3;
+    int*  arr_ep=new int[size_ep];
+
+    arr_ep[0]=4;
+    arr_ep[1]=2;
+    arr_ep[2]=-2;
+
     cout<<"The largest element in the array is "<<find_largest_element_in_array(arr,size);
     cout<<"\nThe 2nd largest elememt in the array is "<<find_second_largest_element_in_array_course_approach(arr,size);
     
@@ -1752,6 +1846,10 @@ int main()
 
     cout<<endl;
     cout<<"Subarray with given sum check: "<<subarray_with_given_sum_optimised(arr_saws, size_saws, 33);
+
+    string ans = (find_equilibrium_point_optimised_alternate(arr_ep, size_ep)==true) ? "Yes" : "No";
+    cout<<endl;
+    cout<<"Is there an equilibrium point in the array arr_ep? "<<ans;
 
     delete[] arr;
     delete[] sorted_arr;
