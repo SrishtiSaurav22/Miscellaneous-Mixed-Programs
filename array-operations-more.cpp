@@ -1559,6 +1559,7 @@ Time complexity:
 Space complexity: 
 Auxiliary space:  
 */
+
 bool find_equilibrium_point_naive(int* arr, int &size)
 {
     if(size<=0)
@@ -1634,6 +1635,89 @@ bool find_equilibrium_point_optimised_alternate(int* arr, int &size)
 
     return false;
 }
+
+//______________________________________________________________________________________________________
+// 20. Prefix sum
+
+/*
+Below is a function to 
+
+Time complexity:  
+
+Space complexity: 
+Auxiliary space:  
+*/
+
+int range_sum_naive(int* arr, int &size, int start, int end)
+{
+    if(size<=0)
+        return -1;
+
+    int sum=0;
+    for(int i=start; i<=end; i++)
+        sum = sum + arr[i];
+    
+    return sum;
+}
+
+int* compute_prefix_sum(int* arr, int &size)
+{
+    int* psum=new int[size];
+    psum[0]=0;
+    
+    for(int i=1; i<size; i++)
+        psum[i] = psum[i-1] + arr[i];
+
+    return psum;
+}
+
+int size_rs=7;
+int arr_rs[]={2,8,3,9,6,5,4};
+// allowed globally as this is treated as a declaration by the compiler
+
+/*
+arr_rs[0]=2;
+arr_rs[1]=8;
+arr_rs[2]=3;
+arr_rs[3]=9;
+arr_rs[4]=6;
+arr_rs[5]=5;
+arr_rs[6]=4;
+
+// This is NOT allowed globally because outside the main function the compiler expects a declaration not a operation,
+// and the above lines are treated as operations
+
+*/
+
+int* psum=compute_prefix_sum(arr_rs, size_rs);
+
+int range_sum_optimised(int l, int r)
+{
+    // we're assuming the (l <= r)
+    if(l>r)
+    {
+        int temp=l;
+        l=r;
+        r=temp;
+    }
+
+    if(l==0)
+        return psum[r];
+    
+    return psum[r] - psum[l-1];
+}
+
+//______________________________________________________________________________________________________
+// 21. Weighted prefix sum
+
+/*
+Below is a function to 
+
+Time complexity:  
+
+Space complexity: 
+Auxiliary space:  
+*/
 
 int main()
 {
@@ -1850,6 +1934,9 @@ int main()
     string ans = (find_equilibrium_point_optimised_alternate(arr_ep, size_ep)==true) ? "Yes" : "No";
     cout<<endl;
     cout<<"Is there an equilibrium point in the array arr_ep? "<<ans;
+
+    cout<<endl;
+    cout<<"Prefix sum: "<<range_sum_optimised(5, 6);
 
     delete[] arr;
     delete[] sorted_arr;
