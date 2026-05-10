@@ -1663,7 +1663,7 @@ int range_sum_naive(int* arr, int &size, int start, int end)
 int* compute_prefix_sum(int* arr, int &size)
 {
     int* psum=new int[size];
-    psum[0]=0;
+    psum[0]=arr[0];
     
     for(int i=1; i<size; i++)
         psum[i] = psum[i-1] + arr[i];
@@ -1686,7 +1686,6 @@ arr_rs[6]=4;
 
 // This is NOT allowed globally because outside the main function the compiler expects a declaration not a operation,
 // and the above lines are treated as operations
-
 */
 
 int* psum=compute_prefix_sum(arr_rs, size_rs);
@@ -1718,6 +1717,37 @@ Time complexity:
 Space complexity: 
 Auxiliary space:  
 */
+
+int weights[]={1,2,3,4,5,6,7};
+
+int* compute_weighted_prefix_sum(int* arr, int size, int weights[])
+{
+    int* pwsum=new int[size];
+    pwsum[0] = ( weights[0] * arr[0] );
+    
+    for(int i=1; i<size; i++)
+        pwsum[i] = pwsum[i-1] +( weights[i] * arr[i] );
+
+    return pwsum;
+}
+
+int* pwsum=compute_weighted_prefix_sum(arr_rs, size_rs, weights);
+
+int range_weighted_sum_optimised(int l, int r)
+{
+    // we're assuming the (l <= r)
+    if(l>r)
+    {
+        int temp=l;
+        l=r;
+        r=temp;
+    }
+
+    if(l==0)
+        return pwsum[r];
+    
+    return pwsum[r] - pwsum[l-1];
+}
 
 int main()
 {
@@ -1936,7 +1966,7 @@ int main()
     cout<<"Is there an equilibrium point in the array arr_ep? "<<ans;
 
     cout<<endl;
-    cout<<"Prefix sum: "<<range_sum_optimised(5, 6);
+    cout<<"Prefix sum: "<<range_weighted_sum_optimised(5, 6);
 
     delete[] arr;
     delete[] sorted_arr;
@@ -1951,6 +1981,9 @@ int main()
     delete[] arr_me;
     delete[] arr_sws;
     delete[] arr_saws;
+
+    delete[] psum;
+    delete[] pwsum;
     
     return 0;
 }
