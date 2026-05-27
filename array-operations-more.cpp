@@ -1749,6 +1749,82 @@ int range_weighted_sum_optimised(int l, int r)
     return pwsum[r] - pwsum[l-1];
 }
 
+//______________________________________________________________________________________________________
+// 22. Finding the maximum appearing element
+
+/*
+Below is a function to 
+
+Time complexity:  
+
+Space complexity: 
+Auxiliary space:  
+*/
+
+int find_max_appearing_element(int* left_array, int* right_array, int &size)
+{
+    if(size==0)
+        return -1;
+    
+    // 1. Create a vector that is the cobmination of the 'size' number of ranges
+    vector<int> combined_ranges;
+
+    for(int i=0; i<size; i++)
+    {
+        for(int j=left_array[i]; j<=right_array[i]; j++)
+            combined_ranges.push_back(j);
+    }
+
+    // 2. Sort this vector
+    sort(combined_ranges.begin(), combined_ranges.end());
+
+    // 3. Create a map of frequencies for the vector elements
+    map<int, int> freqs;
+
+    int count=1, i;
+    for(i=1; i < combined_ranges.size(); i++)
+    {
+        if(combined_ranges[i] == combined_ranges[i-1])
+            ++count;
+        
+        else
+        {
+            //freqs.insert( {combined_ranges[i-1], count} );
+            freqs[combined_ranges[i-1]] = count; 
+            // safer because if by chance the key already exists then the insert function will silently fail 
+            // the vector element is the key, their frequency is the value
+
+            count=1;
+            // reset the counter for the new element
+        }
+
+        // if we reached the last element then we need to insert it otherwise we will miss it
+        if(i == combined_ranges.size()-1)
+        {
+            if(combined_ranges[i] == combined_ranges[i-1])
+            freqs[combined_ranges[i-1]] = ++count;
+
+        else
+            freqs[combined_ranges[i]] = count;
+        }
+    }
+
+    // 4. Find the maximum frequency and that corresponding element in the map of vector elements and their frequencies
+    int key=-1;
+    int max=INT_MIN;
+
+    for(auto itr = freqs.begin(); itr != freqs.end(); itr++)
+    {
+        if( itr->second > max )
+        {
+            max = itr->second;
+            key = itr->first;
+        }
+    }
+
+    return key;
+}
+
 int main()
 {
     int size=10;
@@ -1967,6 +2043,12 @@ int main()
 
     cout<<endl;
     cout<<"Prefix sum: "<<range_weighted_sum_optimised(5, 6);
+
+    int left_array[]={1, 2, 5, 15};
+    int right_array[]={5, 8, 7, 18};
+    int range_count=4;
+
+    cout<<"Maximum appearing element in the ranges: "<<find_max_appearing_element(left_array, right_array, range_count);
 
     delete[] arr;
     delete[] sorted_arr;
