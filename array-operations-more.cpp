@@ -1775,6 +1775,10 @@ int find_max_appearing_element(int* left_array, int* right_array, int &size)
             combined_ranges.push_back(j);
     }
 
+    // just in case
+    if(combined_ranges.size() == 0)
+        return -1;
+
     // 2. Sort this vector
     sort(combined_ranges.begin(), combined_ranges.end());
 
@@ -1797,27 +1801,20 @@ int find_max_appearing_element(int* left_array, int* right_array, int &size)
             count=1;
             // reset the counter for the new element
         }
-
-        // if we reached the last element then we need to insert it otherwise we will miss it
-        if(i == combined_ranges.size()-1)
-        {
-            if(combined_ranges[i] == combined_ranges[i-1])
-            freqs[combined_ranges[i-1]] = ++count;
-
-        else
-            freqs[combined_ranges[i]] = count;
-        }
     }
+
+    // now i == combined_ranges.size() i.e. not a valid index anymore
+    freqs[combined_ranges[i-1]] = count;
 
     // 4. Find the maximum frequency and that corresponding element in the map of vector elements and their frequencies
     int key=-1;
-    int max=INT_MIN;
+    int max_freq=INT_MIN;
 
     for(auto itr = freqs.begin(); itr != freqs.end(); itr++)
     {
-        if( itr->second > max )
+        if( itr->second > max_freq )
         {
-            max = itr->second;
+            max_freq = itr->second;
             key = itr->first;
         }
     }
