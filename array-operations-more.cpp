@@ -1761,12 +1761,12 @@ Space complexity:
 Auxiliary space:  
 */
 
-int find_max_appearing_element(int* left_array, int* right_array, int &size)
+int find_max_appearing_element_naive(int* left_array, int* right_array, int &size)
 {
     if(size==0)
         return -1;
     
-    // 1. Create a vector that is the cobmination of the 'size' number of ranges
+    // 1. Create a vector that is the combination of the 'size' number of ranges
     vector<int> combined_ranges;
 
     for(int i=0; i<size; i++)
@@ -1820,6 +1820,42 @@ int find_max_appearing_element(int* left_array, int* right_array, int &size)
     }
 
     return key;
+}
+
+int find_max_appearing_element_optimised(int* left_array, int* right_array, int &size)
+{
+    // find the max element in the right array, that will also be the size of the difference and frequency arrays
+    int maxi=right_array[0];
+
+    for(int i=1;i<size;i++)
+        if(right_array[i] > maxi)
+            maxi=right_array[i];
+    
+    vector<int> difference_vector( maxi+2 , 0 );
+
+    // mark starts and ends
+    for(int i=0; i<size; i++)
+    {
+        difference_vector[ left_array[i] ]++;
+        difference_vector[ right_array[i] + 1 ]--;
+    }
+
+    int maxFreq = difference_vector[0];
+    int result = 0;
+
+    // prefix sum
+    for(int i = 1; i <= maxi; i++)
+    {
+        difference_vector[i] += difference_vector[i - 1];
+
+        if(difference_vector[i] > maxFreq)
+        {
+            maxFreq = difference_vector[i];
+            result = i;
+        }
+    }
+
+    return result;
 }
 
 int main()
@@ -2045,7 +2081,7 @@ int main()
     int right_array[]={5, 8, 7, 18};
     int range_count=4;
 
-    cout<<"Maximum appearing element in the ranges: "<<find_max_appearing_element(left_array, right_array, range_count);
+    cout<<"Maximum appearing element in the ranges: "<<find_max_appearing_element_optimised(left_array, right_array, range_count);
 
     delete[] arr;
     delete[] sorted_arr;
